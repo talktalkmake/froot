@@ -356,6 +356,7 @@ template {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  min-height: 100vh;
 }
 button {
   margin: 2ch;
@@ -381,11 +382,6 @@ button:disabled {
   border: 1px solid gray;
   cursor: no-drop;
 }
-
-.list {
-
-}
-
 
 .flex {
   display: flex;

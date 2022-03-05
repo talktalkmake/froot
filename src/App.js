@@ -15,15 +15,32 @@ function App() {
   
   const [data, setData] = useState([])
   const [filter, setFilter] = useState('getFruit')
+  const [newName, setNewName] = useState('')
 
   
   async function fetchAPI(){
     try {
       const fetchResult = await fetch(api + filter)
-      const json = await fetchResult.json()
+      let json = await fetchResult.json()
       setData(json)
     } catch {
       console.error('Unable to retrieve produce')
+    }
+  }
+
+  async function addNew(type){
+    try {
+      const postResult = await fetch(`${api}add/${type}`, {
+        method: 'POST',
+        body: newName,
+        headers: {
+          'Content-Type' : 'text/plain'
+        }
+      })
+      let json = await postResult.json()
+      setData(json)
+    } catch {
+      console.error(`unable to post new ${type}`)
     }
   }
 
@@ -33,21 +50,21 @@ function App() {
 
   return (
     <div className="App">
-      <header>
+      <h1>{filter}</h1>
       <section className='flex flex-row'>
         <button disabled={filter === 'getFruit'} onClick={() => setFilter('getFruit')}>Fruit</button>
         <button disabled={filter === 'getVeg'} onClick={() => setFilter('getVeg')}>Veg</button>
-      </header>
       </section>
       <div className='results'>
         <ul className='list'>
-          {data.map((fruit, i) => <li key={i}>{fruit.name}</li>)}
           {data.map((fruit, i) => <li key={i}>{fruit.name} ({fruit.age} days old / beauty: {fruit.beauty})</li>)}
         </ul>
       </div>
       <h3>Add a new fruit or veg</h3>
       <input type='text' onChange={(e) => setNewName(e.target.value)} />
       <section className='flex flex-row'>
+        {filter === 'getFruit' && <button onClick={() => addNew('fruit')}>Add New Fruit</button>}
+        {filter === 'getVeg' && <button onClick={() => addNew('veg')}>Add New Veg</button>}
       </section>
     </div>
   );
