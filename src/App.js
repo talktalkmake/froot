@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 import './App.css'
 import { useState, useEffect } from 'react'
 
@@ -20,29 +21,15 @@ function App() {
 
   
   async function fetchAPI(){
-    try {
-      const fetchResult = await fetch(api + filter)
-      let json = await fetchResult.json()
-      setData(json)
-    } catch {
-      console.error('Unable to retrieve produce')
-    }
+    await axios(api + filter)
+      .then(response => setData(response.data))
+      .catch(error => console.error(`Fetching the API didn't work: ${error}`))
   }
 
   async function addNew(type){
-    try {
-      const postResult = await fetch(`${api}add/${type}`, {
-        method: 'POST',
-        body: newName,
-        headers: {
-          'Content-Type' : 'text/plain'
-        }
-      })
-      let json = await postResult.json()
-      setData(json)
-    } catch {
-      console.error(`unable to post new ${type}`)
-    }
+    await axios.post(`${api}add/${type}`, { newName })
+      .then(response => setData(response.data))
+      .catch(error => console.error(`Unable to post new ${type}`))
   }
 
   useEffect(() => {
